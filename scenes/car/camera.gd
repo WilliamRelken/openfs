@@ -1,17 +1,27 @@
 extends Node3D
 
 var direction = Vector3.FORWARD
+var is_paused = false
 
 func _physics_process(delta):
-	var look_direction = Input.get_vector("look_right", "look_left", "look_down", "look_up")
-	var current_velocity = get_parent().get_linear_velocity()
-	if (look_direction.length() > 0.1):
-		var focus_direction = Vector3(look_direction.x, direction.y, direction.z)
-		direction = lerp(direction, focus_direction.normalized(), 2.5 * delta)
-	elif (current_velocity.length() > 1):
-		current_velocity.y = 0
-		direction = lerp(direction, -current_velocity.normalized(), 2.5 * delta)
-	global_transform.basis = lerp(global_transform.basis, get_rotation_from_direction(direction), 2.5 * delta)
+	if (Input.is_action_just_pressed("start")):
+		if (is_paused):
+			%CameraAngles/Overview/Camera.set_priority(0)
+			is_paused = false
+		else:
+			%CameraAngles/Overview/Camera.set_priority(10)
+			is_paused = true
+		return
+# COMMENTED PENDING PHANTOM CAMERA FIXES
+	#var look_direction = Input.get_vector("look_right", "look_left", "look_down", "look_up")
+	#var current_velocity = get_parent().get_linear_velocity()
+	#if (look_direction.length() > 0.1):
+		#var focus_direction = Vector3(look_direction.x, direction.y, direction.z)
+		#direction = lerp(direction, focus_direction.normalized(), 2.5 * delta)
+	#elif (current_velocity.length() > 1):
+		#current_velocity.y = 0
+		#direction = lerp(direction, -current_velocity.normalized(), 2.5 * delta)
+	#global_transform.basis = lerp(global_transform.basis, get_rotation_from_direction(direction), 2.5 * delta)
 	
 func get_rotation_from_direction(look_direction: Vector3) -> Basis:
 	look_direction = look_direction.normalized()

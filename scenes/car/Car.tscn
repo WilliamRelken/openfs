@@ -1,14 +1,18 @@
-[gd_scene load_steps=6 format=3 uid="uid://cg2jllum5ielp"]
+[gd_scene load_steps=10 format=3 uid="uid://cg2jllum5ielp"]
 
 [ext_resource type="Script" path="res://scenes/car/car.gd" id="1_7yvfj"]
 [ext_resource type="PackedScene" uid="uid://ngi6oovsxd55" path="res://models/m3_body/m3_no_wheels.glb" id="2_i7kfh"]
 [ext_resource type="PackedScene" uid="uid://bepvtenetymni" path="res://models/wheel/super_car_wheel.glb" id="3_wy4mi"]
 [ext_resource type="Script" path="res://scenes/car/camera.gd" id="4_cbvlw"]
+[ext_resource type="Script" path="res://addons/Panel3D/3dpanel.gd" id="5_3r2s1"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera/phantom_camera_3D.gd" id="5_ewcaw"]
+[ext_resource type="Script" path="res://addons/phantom_camera/scripts/phantom_camera_host/phantom_camera_host.gd" id="5_le0ps"]
+[ext_resource type="PackedScene" uid="uid://bdmophht4moah" path="res://scenes/menus/Car_Main.tscn" id="6_ebyln"]
 
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wiw45"]
 points = PackedVector3Array(-0.8, 0.3, -1.8, 0.8, -0.3, 1.9, -0.8, 0.3, 1.9, 0.8, 0.3, -1.8, -0.8, -0.3, -2, 0, -0.3, -2.1, 0.8, -0.3, -2, -0.8, -0.3, 1.9, 0, 0.8, -1.5, 0.8, 0.3, 1.9)
 
-[node name="car" type="VehicleBody3D"]
+[node name="Car" type="VehicleBody3D"]
 mass = 2000.0
 gravity_scale = 1.2
 script = ExtResource("1_7yvfj")
@@ -79,11 +83,15 @@ damping_relaxation = 0.8
 transform = Transform3D(-1.1, 0, -9.61651e-08, 0, 1.1, 0, 9.61651e-08, 0, -1.1, 0, 0, 0)
 
 [node name="camera" type="Node3D" parent="."]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.95947, 5.37591)
 script = ExtResource("4_cbvlw")
 
-[node name="3rd_pov_long" type="Camera3D" parent="camera"]
-transform = Transform3D(-1, -1.46944e-08, 2.36204e-08, 0, 0.849101, 0.528231, -2.78181e-08, 0.528231, -0.849101, -0.0943816, 3.14279, -5.56438)
+[node name="MainCamera" type="Camera3D" parent="camera"]
+unique_name_in_owner = true
+transform = Transform3D(-1, -7.2819e-08, 1.32277e-07, 0, 0.876029, 0.482259, -1.50996e-07, 0.482259, -0.876029, 0, 0, 0)
+
+[node name="PhantomCameraHost" type="Node" parent="camera/MainCamera"]
+script = ExtResource("5_le0ps")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="camera"]
 
@@ -109,6 +117,20 @@ offset_top = -60.0
 grow_horizontal = 0
 grow_vertical = 0
 
+[node name="FollowCams" type="Node3D" parent="camera"]
+transform = Transform3D(-1, -7.2819e-08, 1.32277e-07, 0, 0.876029, 0.482259, -1.50996e-07, 0.482259, -0.876029, 0, 0, 0)
+script = ExtResource("5_ewcaw")
+priority_override = false
+priority = 1
+follow_mode = 0
+look_at_mode = 2
+look_at_target = NodePath("../..")
+look_at_parameters/look_at_target_offset = Vector3(0, 0, 0)
+tween_parameters = null
+tween_on_load = true
+inactive_update_mode = 0
+camera_3D_resource = null
+
 [node name="lights" type="Node3D" parent="."]
 
 [node name="left_headlight" type="SpotLight3D" parent="lights"]
@@ -120,3 +142,33 @@ spot_range = 10.0
 transform = Transform3D(1, 0, 0, 0, 0.959378, 0.282124, 0, -0.282124, 0.959378, 0.6, 0.278, -2.217)
 light_energy = 2.0
 spot_range = 10.0
+
+[node name="Menu" type="Node3D" parent="."]
+
+[node name="CameraAngles" type="Node3D" parent="Menu"]
+unique_name_in_owner = true
+
+[node name="Overview" type="Node3D" parent="Menu/CameraAngles"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.60174, 0.552885, -3.07192)
+
+[node name="Camera" type="Node3D" parent="Menu/CameraAngles/Overview"]
+transform = Transform3D(-0.990425, -0.0240027, 0.135944, 0, 0.984768, 0.173874, -0.138047, 0.172209, -0.97534, 0, 0, 0)
+script = ExtResource("5_ewcaw")
+priority_override = false
+priority = 0
+follow_mode = 0
+look_at_mode = 2
+look_at_target = NodePath("../../../Menus/Panel3D")
+look_at_parameters/look_at_target_offset = Vector3(0, 0, 0)
+tween_parameters = null
+tween_on_load = true
+inactive_update_mode = 0
+camera_3D_resource = null
+
+[node name="Menus" type="Node3D" parent="Menu"]
+
+[node name="Panel3D" type="StaticBody3D" parent="Menu/Menus"]
+transform = Transform3D(-0.989213, -0.0257497, 0.144203, 0.00387581, 0.979483, 0.20149, -0.146432, 0.199875, -0.968818, 1.42572, 0.32775, -1.80903)
+script = ExtResource("5_3r2s1")
+_auto_load_ui = ExtResource("6_ebyln")
+viewport_size = Vector2i(1800, 1024)
