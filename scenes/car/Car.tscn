@@ -1,0 +1,122 @@
+[gd_scene load_steps=6 format=3 uid="uid://cg2jllum5ielp"]
+
+[ext_resource type="Script" path="res://scenes/car/car.gd" id="1_7yvfj"]
+[ext_resource type="PackedScene" uid="uid://ngi6oovsxd55" path="res://models/m3_body/m3_no_wheels.glb" id="2_i7kfh"]
+[ext_resource type="PackedScene" uid="uid://bepvtenetymni" path="res://models/wheel/super_car_wheel.glb" id="3_wy4mi"]
+[ext_resource type="Script" path="res://scenes/car/camera.gd" id="4_cbvlw"]
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_wiw45"]
+points = PackedVector3Array(-0.8, 0.3, -1.8, 0.8, -0.3, 1.9, -0.8, 0.3, 1.9, 0.8, 0.3, -1.8, -0.8, -0.3, -2, 0, -0.3, -2.1, 0.8, -0.3, -2, -0.8, -0.3, 1.9, 0, 0.8, -1.5, 0.8, 0.3, 1.9)
+
+[node name="car" type="VehicleBody3D"]
+mass = 2000.0
+gravity_scale = 1.2
+script = ExtResource("1_7yvfj")
+
+[node name="car_body" type="MeshInstance3D" parent="."]
+
+[node name="m3_no_wheels" parent="car_body" instance=ExtResource("2_i7kfh")]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, -0.25, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.0927449, 0)
+shape = SubResource("ConvexPolygonShape3D_wiw45")
+
+[node name="fr_wheel" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, 0, -1.618)
+use_as_steering = true
+wheel_roll_influence = 0.01
+wheel_radius = 0.3
+wheel_friction_slip = 0.8
+suspension_stiffness = 80.0
+suspension_max_force = 24000.0
+damping_compression = 1.9
+damping_relaxation = 0.8
+
+[node name="wheel_model" parent="fr_wheel" instance=ExtResource("3_wy4mi")]
+transform = Transform3D(1.1, 9.61651e-08, 9.61651e-08, 9.61651e-08, -1.1, 0, 9.61651e-08, 8.40702e-15, -1.1, 0, 0, 0)
+
+[node name="fl_wheel" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, 0, -1.618)
+use_as_steering = true
+wheel_roll_influence = 0.01
+wheel_radius = 0.3
+wheel_friction_slip = 0.8
+suspension_stiffness = 80.0
+suspension_max_force = 24000.0
+damping_compression = 1.9
+damping_relaxation = 0.8
+
+[node name="wheel_model" parent="fl_wheel" instance=ExtResource("3_wy4mi")]
+transform = Transform3D(-1.1, 0, -9.61651e-08, 0, 1.1, 0, 9.61651e-08, 0, -1.1, 0, 0, 0)
+
+[node name="br_wheel" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.8, -0.012, 1.113)
+use_as_traction = true
+wheel_roll_influence = 0.01
+wheel_radius = 0.31
+wheel_friction_slip = 0.75
+suspension_stiffness = 80.0
+suspension_max_force = 24000.0
+damping_compression = 1.9
+damping_relaxation = 0.8
+
+[node name="wheel_model" parent="br_wheel" instance=ExtResource("3_wy4mi")]
+transform = Transform3D(1.1, -1.66095e-07, -9.61651e-08, -1.66095e-07, -1.1, 0, -9.61651e-08, 1.45205e-14, -1.1, 0, 0, 0)
+
+[node name="bl_wheel" type="VehicleWheel3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8, -0.012, 1.113)
+use_as_traction = true
+wheel_roll_influence = 0.01
+wheel_radius = 0.31
+wheel_friction_slip = 0.75
+suspension_stiffness = 80.0
+suspension_max_force = 24000.0
+damping_compression = 1.9
+damping_relaxation = 0.8
+
+[node name="wheel_model" parent="bl_wheel" instance=ExtResource("3_wy4mi")]
+transform = Transform3D(-1.1, 0, -9.61651e-08, 0, 1.1, 0, 9.61651e-08, 0, -1.1, 0, 0, 0)
+
+[node name="camera" type="Node3D" parent="."]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
+script = ExtResource("4_cbvlw")
+
+[node name="3rd_pov_long" type="Camera3D" parent="camera"]
+transform = Transform3D(-1, -1.46944e-08, 2.36204e-08, 0, 0.849101, 0.528231, -2.78181e-08, 0.528231, -0.849101, -0.0943816, 3.14279, -5.56438)
+
+[node name="CanvasLayer" type="CanvasLayer" parent="camera"]
+
+[node name="Control" type="Control" parent="camera/CanvasLayer"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 8
+size_flags_vertical = 8
+
+[node name="mph" type="Label" parent="camera/CanvasLayer/Control"]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -100.0
+offset_top = -60.0
+grow_horizontal = 0
+grow_vertical = 0
+
+[node name="lights" type="Node3D" parent="."]
+
+[node name="left_headlight" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 0.959378, 0.282124, 0, -0.282124, 0.959378, -0.6, 0.278, -2.217)
+light_energy = 2.0
+spot_range = 10.0
+
+[node name="right_headlight" type="SpotLight3D" parent="lights"]
+transform = Transform3D(1, 0, 0, 0, 0.959378, 0.282124, 0, -0.282124, 0.959378, 0.6, 0.278, -2.217)
+light_energy = 2.0
+spot_range = 10.0
